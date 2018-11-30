@@ -1,0 +1,36 @@
+ 1. Create Graph
+	* Each node has a energy value
+
+2. Import Graph into Program.
+
+3. Function chooses path with highest total energy value.
+	* Use Dijkstra’s algorithm
+		* lowest cost
+
+4. Program outputs chosen path.
+
+5. Each node used in path has energy value decremented.
+
+6. Return to step 3.
+
+graph information
+node, node energy value, node's neighbors, edge cost 
+
+add counter for loop iterations
+
+Loop until first node runs out of energy
+
+	check for dead node
+
+	randomly select source/destination
+
+		function (graph, source, destination)
+
+			create edge costs for every path that it looks 
+	
+			dijkstra's for shortest cost path to dest.
+
+			decriment the value of every node in that path (in the graph)
+				If energy value falls below X, increase edge cost to neighbors
+
+			return graph
