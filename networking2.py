@@ -22,6 +22,12 @@ class Node:
 		#s[1] = links, split with ,
 		self.links = s[1].split(',')
 
+	def dangerLevel(self):
+		if( self.energy > 10 ):
+			return int((100 - self.energy) / 25) 
+		else:
+			return 100 * (100 - self.energy)
+
 	def deductEnergy(self):
 		self.energy -= 1
 
@@ -151,11 +157,13 @@ print("Node Graph Info:")
 NG = NodeGraph(NC)
 NG.printInfo()
 
-print("all paths from a to d")
-test = NG.findAllPaths('A', 'D')
+print("all paths from A to J")
+test = NG.findAllPaths('A', 'J')
 for path in test:
 	print(path)
 
+
+#exit()
 #routing v.1
 count = 0
 while not NC.hasDeadNode():
@@ -174,6 +182,7 @@ while not NC.hasDeadNode():
 	#find path with nodes with the most energy
 	shortestpath = []
 	shortestweight = 999999
+	allweights = []
 	#iterate through all paths
 	for path in paths:
 		weight = 0
@@ -181,7 +190,11 @@ while not NC.hasDeadNode():
 		#for each node, find the total weight of the path
 		for nodeid in path:
 			node = NC.findNodeByID(nodeid)
-			weight += 100 - node.energy
+			if not nodeid == destination:
+				tempweight = 100 - node.energy
+				weight += tempweight * node.dangerLevel()
+
+		allweights.append(weight)
 
 		#found new least weighted path, set it as such
 		if weight < shortestweight:
@@ -192,12 +205,13 @@ while not NC.hasDeadNode():
 	print(str(count) + " - Src: " + source + " Dest: " + destination + " Path...")
 	print(shortestpath)
 	print(shortestweight)
-	print("---")
+	print(allweights)
 
 	#deduct all node energys in path
 	for nodeid in shortestpath:
 		node = NC.findNodeByID(nodeid)
-		node.deductEnergy()
+		if not nodeid == destination:
+			node.deductEnergy()
 
 NC.printInfoEnergy()
 
