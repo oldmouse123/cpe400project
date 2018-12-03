@@ -22,6 +22,7 @@ class Node:
 		#s[1] = links, split with ,
 		self.links = s[1].split(',')
 
+	#used to increase the weight
 	def dangerLevel(self):
 		if( self.energy > 10 ):
 			return int((100 - self.energy) / 25) 
@@ -162,15 +163,25 @@ test = NG.findAllPaths('A', 'J')
 for path in test:
 	print(path)
 
+#dictionary used to tract what source and destination was chosen
+srcdict = {}
+destdict = {}
+for node in NC.nodes:
+	srcdict[node.id] = 0
+	destdict[node.id] = 0
 
 #exit()
 #routing v.1
 count = 0
 while not NC.hasDeadNode():
 	count += 1
+
 	#get random source and destination
 	source = (random.choice(NC.nodes)).id
 	destination = (random.choice(NC.nodes)).id
+
+	srcdict[source] += 1
+	destdict[destination] += 1
 
 	#source = "A"
 	#destination = "D"
@@ -178,22 +189,23 @@ while not NC.hasDeadNode():
 	#get all paths from source to destination
 	paths = NG.findAllPaths(source, destination)
 
-
 	#find path with nodes with the most energy
 	shortestpath = []
 	shortestweight = 999999
 	allweights = []
+
 	#iterate through all paths
 	for path in paths:
 		weight = 0
 
-		#for each node, find the total weight of the path
+		#for each node, add to total weight of the path if not the destination
 		for nodeid in path:
-			node = NC.findNodeByID(nodeid)
 			if not nodeid == destination:
+				node = NC.findNodeByID(nodeid)
 				tempweight = 100 - node.energy
 				weight += tempweight * node.dangerLevel()
 
+		#append each weight gathered for debug purposes
 		allweights.append(weight)
 
 		#found new least weighted path, set it as such
@@ -209,11 +221,16 @@ while not NC.hasDeadNode():
 
 	#deduct all node energys in path
 	for nodeid in shortestpath:
-		node = NC.findNodeByID(nodeid)
 		if not nodeid == destination:
+			node = NC.findNodeByID(nodeid)
 			node.deductEnergy()
 
+print("\nFinal Stats:")
 NC.printInfoEnergy()
+print("Sources Used:")
+print(srcdict)
+print("Destinations Used:")
+print(destdict)
 
 
 
